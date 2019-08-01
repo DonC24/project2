@@ -10,7 +10,9 @@ class Onemed extends React.Component {
             {/*User Id: {this.props.medData.user_id}<br />*/}
             Name: {this.props.medData.name}<br />
             Dose: {this.props.medData.dose} {this.props.medData.dose_category}<br />
-            Next dose in: {this.props.medData.nextTime}
+            Next dose in: {this.props.medData.nextTime}<br />
+            <a href={`/meds/single/edit/${this.props.medData.id}`}>Edit this entry</a><br />
+            <a href = {`/meds/single/delete/${this.props.medData.id}`}>Delete this entry</a>
         </li>
     );
   }

@@ -60,7 +60,78 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
-//create new medication
+//delete a medication
+app.get('/meds/single/delete/:id', (request, response) => {
+    var inputId = parseInt(request.params.id);
+    let queryString = "SELECT * FROM medication WHERE id = ($1)";
+    var idVal = [inputId];
+    pool.query(queryString, idVal, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            const data = {
+                med : res.rows[0]
+            };
+            //console.log(data);
+            response.render('delete', data);
+        }
+    });
+});
+
+app.delete('/meds/single/:id', (request, response) => {
+    console.log("inside app delete");
+    var newMed = request.body;
+    var inputId = parseInt(request.params.id);
+    let queryString = "DELETE FROM medication WHERE id = ($1)";
+    var idVal = [inputId];
+    console.log(idVal);
+    pool.query(queryString, idVal, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            //response.send('Yay! deleted!');
+            response.redirect(`/meds/${newMed.user_id}`);
+        }
+    });
+});
+
+
+//get edit page of single medication
+app.get('/meds/single/edit/:id', (request, response) => {
+    var inputId = parseInt(request.params.id);
+    let queryString = "SELECT * FROM medication WHERE id = ($1)";
+    var idVal = [inputId];
+    pool.query(queryString, idVal, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            const data = {
+                med : res.rows[0]
+            };
+            console.log(data);
+            response.render('edit', data);
+        }
+    });
+});
+
+//Updates the SQL with new info for single medication
+app.put('/meds/single/edit/:id', (request, response) => {
+    var inputId = parseInt(request.params.id);
+    console.log(request.body);
+    var newMed = request.body;
+    let queryString = "UPDATE medication SET name=($1), dose=($2), dose_category=($3), time_interval=($4), start_time=($5) WHERE id = ($6)";
+    let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, newMed.start_time, newMed.user_id];
+
+    pool.query(queryString, values, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            response.redirect(`/meds/${newMed.user_id}`);
+        }
+    });
+});
+
+//POST new medication
 app.post('/meds', (request, response) => {
     var newMed = request.body;
     let userId = request.cookies['User'];
@@ -152,7 +223,7 @@ app.get('/meds/:id', (request, response) => {
     });
 });
 
-//register user
+//POST register user
 app.post('/users', (request, response) => {
     // hash the password
     let hashedPassword = sha256( request.body.password + SALT );
@@ -180,6 +251,12 @@ app.post('/users', (request, response) => {
             response.redirect('/meds/' + res.rows[0].id);
         }
     });
+});
+
+app.get('/logout', (request, response) => {
+    response.clearCookie('loggedin');
+    response.clearCookie('User');
+    response.redirect('/');
 });
 
 //checking login

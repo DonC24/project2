@@ -4,7 +4,7 @@ const Layout = require('./layout.jsx');
 class New extends React.Component {
   render() {
     return (
-<Layout>
+        <Layout>
             <h1>Create a new schedule!</h1>
             <form method="POST" action="/meds">
                 {/*<p>User Id: <input type="number" name="user_id" value={this.props.medData.user_id} hidden /></p>*/}
@@ -21,7 +21,7 @@ class New extends React.Component {
                 <p>--</p>
                 <input type="submit" value="Submit" />
             </form>
-</Layout>
+        </Layout>
     );
   }
 }

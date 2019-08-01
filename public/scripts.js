@@ -26,10 +26,10 @@ window.onload = () => {
 
 
 
-    self.registration.showNotification("Take your medicine!", {
+/*    self.registration.showNotification("Take your medicine!", {
         actions: [
             {
-                action: 'Confirm taken',
+                action: 'Taken',
                 title: 'Confirm'
             },
             {
@@ -41,15 +41,17 @@ window.onload = () => {
 
     self.addEventListener('notificationclick', function(event) {
         event.notification.close();
-        if (event.action === 'archive') {
+        if (event.action === 'Taken') {
             // Archive action was clicked
-            archiveEmail();
+            console.log('medicine was taken');
+            //archiveEmail();
         } else {
             // Main body of notification was clicked
-            clients.openWindow('/inbox');
+            //clients.openWindow('/inbox');
+            console.log('snooze. need to resend notification');
         }
     }, false);
-
+*/
     //const myVar; // 1 day in milliseconds
     /*const notificationTimer = localStorage.getItem('notificationTimer');
     if(notificationTimer){
@@ -60,3 +62,42 @@ window.onload = () => {
     }*/
 
 };
+
+
+
+
+
+/*var button = document.querySelector('#hello');
+
+button.addEventListener('click', function(event){
+  alert('WOW CLICKED');
+  var input = document.querySelector('#studentId');
+  var studentId = input.value;
+
+  doRequest( studentId );
+});
+
+var doRequest = function(studentId){
+
+  // what to do when we recieve the request
+  var responseHandler = function() {
+    console.log("response text", this.responseText);
+    console.log("status text", this.statusText);
+    console.log("status code", this.status);
+  };
+
+  // make a new request
+  var request = new XMLHttpRequest();
+
+  // listen for the request response
+  request.addEventListener("load", responseHandler);
+
+  // ready the system by calling open, and specifying the url
+  // request.open("GET", "https://swapi.co/api/people/1");
+  request.open("GET", "http://localhost:3000/students/"+studentId);
+
+  // send the request
+  request.send();
+
+
+};*/
