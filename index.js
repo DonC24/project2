@@ -60,6 +60,8 @@ app.engine('jsx', reactEngine);
  * ===================================
  */
 
+
+
 //delete a medication
 app.get('/meds/single/delete/:id', (request, response) => {
     var inputId = parseInt(request.params.id);
@@ -119,8 +121,21 @@ app.put('/meds/single/edit/:id', (request, response) => {
     var inputId = parseInt(request.params.id);
     console.log(request.body);
     var newMed = request.body;
+
+    let now = moment();
+    let timeNextPill = newMed.start_time;
+
+    if (timeNextPill < now){
+        timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').local().format();
+    } else {
+        console.log("no need to update time");
+    }
+
+    // let newStart = moment(res.rows[0].start_time).add(res.rows[0].time_interval, 'h').local().format();
+    // console.log("new start" + newStart);
+
     let queryString = "UPDATE medication SET name=($1), dose=($2), dose_category=($3), time_interval=($4), start_time=($5) WHERE id = ($6)";
-    let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, newMed.start_time, newMed.user_id];
+    let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, newMed.user_id];
 
     pool.query(queryString, values, (err, res) => {
         if (err) {
@@ -165,7 +180,7 @@ app.get('/meds/:id', (request, response) => {
 
     console.log(response.body);
 
-    const queryString = "SELECT * FROM medication WHERE user_id=$1";
+    const queryString = "SELECT medication.id,medication.name,medication.dose,medication.dose_category,medication.start_time,medication.time_interval,medication.user_id,users.name AS user_name FROM medication INNER JOIN users ON (users.id = medication.user_id) WHERE medication.user_id = $1 ORDER BY medication.start_time ASC";
 
     const values = [parseInt(request.params.id)];
 
@@ -176,16 +191,13 @@ app.get('/meds/:id', (request, response) => {
         } else {
             //console.log(res.rows);
 
-            // let newStart = moment(res.rows[0].start_time).add(res.rows[0].time_interval, 'h').local().format();
-            // console.log("new start" + newStart);
+
             if(res.rows[0] === undefined){
                 const data = {
                     medData : res.rows
                 }
                 response.render('userpage', data);
             } else {
-
-
 
                 //find out when the time to next pill
                 for( let i= 0; i< res.rows.length; i++) {
@@ -211,7 +223,7 @@ app.get('/meds/:id', (request, response) => {
                 //console.log(nextPill);
                 //console.log(currentTime);
                 // console.log("next time " + res.rows[0].nextTime);
-
+                console.log(res.rows);
                 const data = {
                     medData : res.rows,
                     minTime : minMili
@@ -222,6 +234,78 @@ app.get('/meds/:id', (request, response) => {
         }
     });
 });
+
+//PUT request from timeout
+app.put('/meds/:id', (request, response) => {
+
+    console.log("inside put req for confirmation");
+    var inputId = parseInt(request.params.id);
+    console.log(inputId);
+
+    let queryString = "SELECT * FROM medication WHERE user_id = ($1)";
+    var idVal = [inputId];
+    pool.query(queryString, idVal, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            let med = res.rows;
+            console.log(med);
+
+            let now = moment();
+            console.log("now: " + now);
+
+            for(let i = 0; i<med.length; i++){
+                if (moment(now).isAfter(med[i].start_time)){
+                    med[i].start_time = moment(med[i].start_time).add(med[i].time_interval, 'h').local().format();
+                } else {
+                    console.log("do nothing");
+                }
+            }
+            console.log(med);
+
+            /*let queryString = "UPDATE medication SET name=($1), dose=($2), dose_category=($3), time_interval=($4), start_time=($5) WHERE id = ($6)";
+            let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, newMed.user_id];
+
+            pool.query(queryString, values, (err, res) => {
+                if (err) {
+                    console.log("query error", err.message);
+                } else {
+                    response.redirect(`/meds/${newMed.user_id}`);
+                }
+            }*/
+        }
+    });
+});
+
+
+
+/*    console.log(request.body);
+    var newMed = request.body;
+
+    let now = moment();
+    let timeNextPill = newMed.start_time;
+
+    if (timeNextPill < now){
+        timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').local().format();
+    } else {
+        console.log("no need to update time");
+    }
+
+    // let newStart = moment(res.rows[0].start_time).add(res.rows[0].time_interval, 'h').local().format();
+    // console.log("new start" + newStart);
+
+    let queryString = "UPDATE medication SET name=($1), dose=($2), dose_category=($3), time_interval=($4), start_time=($5) WHERE id = ($6)";
+    let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, newMed.user_id];
+
+    pool.query(queryString, values, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            response.redirect(`/meds/${newMed.user_id}`);
+        }
+    });
+});*/
+
 
 //POST register user
 app.post('/users', (request, response) => {

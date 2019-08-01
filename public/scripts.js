@@ -1,6 +1,45 @@
 console.log('in scripts.js');
 
-console.log(myVar);
+console.log("myVar " + myVar);
+console.log("userId: " + userId);
+
+let confirmEat = function(){
+    var outputs = document.querySelectorAll('.output');
+    console.log("userId in confirmEat " + userId);
+    console.log("outputs");
+    console.log(outputs);
+    //append button to output
+    var confirmBtn = document.createElement('button');
+    confirmBtn.innerHTML = "Confirm Medication has been taken";
+    outputs[0].appendChild(confirmBtn);
+
+    confirmBtn.addEventListener('click', doRequest());
+
+};
+
+var doRequest = function(){
+
+    console.log("userId in doRequest " + userId);
+
+    // what to do when we recieve the request
+    var responseHandler = function() {
+        console.log("response text", this.responseText);
+        console.log("status text", this.statusText);
+        console.log("status code", this.status);
+    };
+
+    // make a new request
+    var request = new XMLHttpRequest();
+
+    // listen for the request response
+    request.addEventListener("load", responseHandler);
+
+    // ready the system by calling open, and specifying the url
+    request.open("POST", "http://localhost:3000/meds/" + userId + "?_method=PUT");
+
+    // send the request
+    request.send();
+};
 
 window.onload = () => {
 
@@ -8,20 +47,30 @@ window.onload = () => {
       console.log(result);
     });
 
+    console.log("userId in script.js: " + userId);
 
 
-
-
-
-    let spawnNotification = function(Notice,theBody,shouldRequireInteraction) {
+    let spawnNotification = function(title,theBody,shouldRequireInteraction) {
         var options = {
-            body: "This is a notification",
+            title: "MedTrack Notification",
+            body: "Reminder to take your medication!",
             requireInteraction: true
         }
-        var n = new Notification(Notice, options);
+        var n = new Notification(title, options);
     }
 
-    setTimeout(spawnNotification, 2000);
+
+
+    setTimeout(spawnNotification, myVar);
+    setTimeout(confirmEat, myVar);
+
+/*    notification.onclick = function(event){
+        alert('WOW CLICKED');
+        var studentId = input.value;
+
+        doRequest( studentId );
+    };
+*/
 
 
 
@@ -29,8 +78,8 @@ window.onload = () => {
 /*    self.registration.showNotification("Take your medicine!", {
         actions: [
             {
-                action: 'Taken',
-                title: 'Confirm'
+                action: 'confirm',
+                title: 'Taken medicine'
             },
             {
                 action: 'Snooze',
@@ -50,8 +99,8 @@ window.onload = () => {
             //clients.openWindow('/inbox');
             console.log('snooze. need to resend notification');
         }
-    }, false);
-*/
+    }, false);*/
+
     //const myVar; // 1 day in milliseconds
     /*const notificationTimer = localStorage.getItem('notificationTimer');
     if(notificationTimer){
