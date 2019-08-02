@@ -3,29 +3,15 @@ console.log('in scripts.js');
 console.log("myVar " + myVar);
 console.log("userId: " + userId);
 
+var confirmBtn = document.getElementById("confirmBtn");
+confirmBtn.style.display = "none";
+
+
 let confirmEat = function(){
-    var outputs = document.querySelectorAll('.output');
-    console.log("userId in confirmEat " + userId);
-    console.log("outputs");
-    console.log(outputs);
-    let nextHeader = document.getElementById('nextMedHead');
-
-    //append button to output
-    //for(let i = 0; i<outputs.length; i++){
-
-            var confirmBtn = document.createElement('button');
-            confirmBtn.innerHTML = "Confirm Medication has been taken";
-            confirmBtn.setAttribute("class", "btn btn-outline-success");
-            nextHeader.appendChild(confirmBtn);
-
-            confirmBtn.addEventListener('click', doRequest);
-            confirmBtn.addEventListener('click', confirmReq);
-
-    //}
-
+    confirmBtn.style.display="inline-block";
 };
 
-var doRequest = function(){
+/*var doRequest = function(){
 
     console.log("userId in doRequest " + userId);
 
@@ -43,13 +29,13 @@ var doRequest = function(){
     request.addEventListener("load", responseHandler);
 
     // ready the system by calling open, and specifying the url
-    request.open("POST", "http://localhost:3000/meds/" + userId + "?_method=PUT");
+    request.open("POST", "/meds/updates/" + userId + "?_method=PUT");
 
     // send the request
     request.send();
-};
+};*/
 
-var confirmReq = function(){
+/*var confirmReq = function(){
 
     console.log("userId in confirm request " + userId);
 
@@ -67,11 +53,11 @@ var confirmReq = function(){
     request.addEventListener("load", responseHandler);
 
     // ready the system by calling open, and specifying the url
-    request.open("POST", "http://localhost:3000/meds/" + userId + "/confirm");
+    request.open("POST", "/meds/" + userId + "/confirm");
 
     // send the request
     request.send();
-};
+};*/
 
 window.onload = () => {
 
@@ -91,6 +77,7 @@ window.onload = () => {
         var n = new Notification(title, options);
     }
 
+    //confirmBtn.addEventListener('click', function(){doRequest();});
 
 
     setTimeout(spawnNotification, myVar);

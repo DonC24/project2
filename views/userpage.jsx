@@ -28,10 +28,13 @@ class Userpage extends React.Component {
             return <Onemed medData={med}> </Onemed>
         });
 
+        let url = "/meds/updates/" + this.props.medData[0].user_id + "?_method=PUT";
+
         return (
             <Layout>
             <h1>{this.props.medData[0].user_name}'s MedTracker page</h1>
-                <h3 id="nextMedHead">Your next medication is {this.props.medData[0].name}</h3>
+                <h3 id="nextMedHead">Your next medication is {this.props.medData[0].name}<br />
+                <form method="POST" action={url}><input class="btn btn-outline-success" id="confirmBtn" type="submit" value="Medication has been taken"/></form></h3>
                 <div>
                     {itemElements}
                 </div>

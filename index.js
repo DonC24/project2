@@ -92,6 +92,115 @@ app.engine('jsx', reactEngine);
  */
 
 
+//PUT request from timeout/confirmation button
+app.put('/meds/updates/:id', (request, response) => {
+    console.log(request.params);
+    console.log("inside put req for confirmation");
+    var inputId = parseInt(request.params.id);
+    console.log(inputId);
+
+    //get all medication from user ordered by start time
+    let queryString = "SELECT * FROM medication WHERE user_id = ($1) ORDER BY start_time ASC";
+    var idVal = [inputId];
+    pool.query(queryString, idVal, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            let med = res.rows;
+            console.log(med);
+
+            let now = moment();
+            console.log("now: " + now);
+
+            //check if time now is after start time. if it is, add interval to previous start time
+            for(let i = 0; i<med.length; i++){
+                if (moment(now).isAfter(med[i].start_time)){
+                    med[i].start_time = moment(med[i].start_time).add(med[i].time_interval, 'h').local().format();
+                } else {
+                    console.log("do nothing");
+                }
+            }
+            console.log(med);
+
+            //update start time in medication list to new start time.
+            for(let j = 0;  j < med.length; j++){
+                let queryString2 = "UPDATE medication SET start_time=($1) WHERE id = ($2)";
+                let values2 = [med[j].start_time, med[j].id];
+
+                pool.query(queryString2, values2, (err, res) => {
+                    if (err) {
+                        console.log("query error", err.message);
+                    } else{
+                        let timestamp = moment();
+                        const queryString3 = "INSERT INTO confirmation (medication_id, time_taken) VALUES ($1, $2) RETURNING *"
+                        const values3 = [med[j].id, timestamp];
+
+                        pool.query(queryString3, values3, (err, res) => {
+                            if (err) {
+                                console.log("query error", err.message);
+                            } else {
+                                console.log("confirmation inserted");
+                            }
+                        })
+                    }
+                })
+            }
+
+            setTimeout(function(){response.redirect(`/meds/${med[0].user_id}`)}, 2000);
+
+            //setTimeout(function(){response.send("done updating")}, 2000);
+
+        }
+    });
+});
+
+
+
+/*    console.log(request.body);
+    var newMed = request.body;
+
+    let now = moment();
+    let timeNextPill = newMed.start_time;
+
+    if (timeNextPill < now){
+        timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').local().format();
+    } else {
+        console.log("no need to update time");
+    }
+
+    // let newStart = moment(res.rows[0].start_time).add(res.rows[0].time_interval, 'h').local().format();
+    // console.log("new start" + newStart);
+
+    let queryString = "UPDATE medication SET name=($1), dose=($2), dose_category=($3), time_interval=($4), start_time=($5) WHERE id = ($6)";
+    let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, newMed.user_id];
+
+    pool.query(queryString, values, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            response.redirect(`/meds/${newMed.user_id}`);
+        }
+    });
+});*/
+
+//Insert new entry into confirmation log
+/*app.post('/meds/:id/confirm', (request, response) => {
+    console.log("in confirmation post");
+    console.log(request.body);
+    console.log("id " + request.params.id);
+    let timestamp = Date.now();
+    const queryString = "INSERT INTO confirmation (medication_id, time_taken) VALUES ($1, $2) RETURNING *"
+    const values = [request.body, timestamp];
+
+    pool.query(queryString, values, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+        } else {
+            console.log("confirmation inserted");
+        }
+    })
+});
+*/
 
 //delete a medication
 app.get('/meds/single/delete/:id', (request, response) => {
@@ -286,99 +395,7 @@ app.get('/meds/:id', (request, response) => {
     });
 });
 
-//PUT request from timeout/confirmation button
-app.put('/meds/:id', (request, response) => {
 
-    console.log("inside put req for confirmation");
-    var inputId = parseInt(request.params.id);
-    console.log(inputId);
-
-    //get all medication from user ordered by start time
-    let queryString = "SELECT * FROM medication WHERE user_id = ($1) ORDER BY start_time ASC";
-    var idVal = [inputId];
-    pool.query(queryString, idVal, (err, res) => {
-        if (err) {
-            console.log("query error", err.message);
-        } else {
-            let med = res.rows;
-            console.log(med);
-
-            let now = moment();
-            console.log("now: " + now);
-
-            //check if time now is after start time. if it is, add interval to previous start time
-            for(let i = 0; i<med.length; i++){
-                if (moment(now).isAfter(med[i].start_time)){
-                    med[i].start_time = moment(med[i].start_time).add(med[i].time_interval, 'h').local().format();
-                } else {
-                    console.log("do nothing");
-                }
-            }
-            console.log(med);
-
-            //update start time in medication list to new start time.
-            for(let j = 0;  j < med.length; j++){
-                let queryString = "UPDATE medication SET start_time=($1) WHERE id = ($2)";
-                let values = [med[j].start_time, med[j].id];
-
-                pool.query(queryString, values, (err, res) => {
-                    if (err) {
-                        console.log("query error", err.message);
-                    }
-                })
-            }
-
-            setTimeout(function(){response.redirect(`/meds/${med[0].user_id}`)}, 2000);
-
-        }
-    });
-});
-
-
-
-/*    console.log(request.body);
-    var newMed = request.body;
-
-    let now = moment();
-    let timeNextPill = newMed.start_time;
-
-    if (timeNextPill < now){
-        timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').local().format();
-    } else {
-        console.log("no need to update time");
-    }
-
-    // let newStart = moment(res.rows[0].start_time).add(res.rows[0].time_interval, 'h').local().format();
-    // console.log("new start" + newStart);
-
-    let queryString = "UPDATE medication SET name=($1), dose=($2), dose_category=($3), time_interval=($4), start_time=($5) WHERE id = ($6)";
-    let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, newMed.user_id];
-
-    pool.query(queryString, values, (err, res) => {
-        if (err) {
-            console.log("query error", err.message);
-        } else {
-            response.redirect(`/meds/${newMed.user_id}`);
-        }
-    });
-});*/
-
-
-app.post('meds/:id/confirm', (request, response) => {
-    console.log(request.body);
-    console.log("id " + request.params.id);
-    let timestamp = Date.now();
-    const queryString = "INSERT INTO confirmation (medication_id, time_taken) VALUES ($1, $2) RETURNING *"
-    const values = [request.body, timestamp];
-
-    pool.query(queryString, values, (err, res) => {
-        if (err) {
-            console.log("query error", err.message);
-        } else {
-            console.log("confirmation inserted");
-        }
-    })
-})
 
 
 //POST register user
