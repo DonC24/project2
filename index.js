@@ -73,6 +73,12 @@ app.get('/meds/single/delete/:id', (request, response) => {
         if (err) {
             console.log("query error", err.message);
         } else {
+            //format start time to local time to display on user page
+            for( let i= 0; i< res.rows.length; i++) {
+                let dateTimeNext = res.rows[i].start_time;
+                res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+            }
+
             const data = {
                 med : res.rows[0]
             };
@@ -109,6 +115,14 @@ app.get('/meds/single/edit/:id', (request, response) => {
         if (err) {
             console.log("query error", err.message);
         } else {
+
+            //format start time to local time to display on user page
+            for( let i= 0; i< res.rows.length; i++) {
+                let dateTimeNext = res.rows[i].start_time;
+                res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+            }
+
+
             const data = {
                 med : res.rows[0]
             };
@@ -162,10 +176,7 @@ app.post('/meds', (request, response) => {
             console.log("query error", err.message);
         } else {
             console.log(res);
-            /*const data = {
-                artist : res.rows[0]
-            }
-            console.log(data);*/
+
             //response.send("New medication has been created!");
             response.redirect(`/meds/${userId}`);
         }
@@ -201,7 +212,7 @@ app.get('/meds/:id', (request, response) => {
                 response.render('userpage', data);
             } else {
 
-                //find out when the time to next pill
+                //find out how long to next pill (eg: in 2 hours)
                 for( let i= 0; i< res.rows.length; i++) {
                     let timeNextPill = res.rows[i].start_time;
                     res.rows[i]['nextTime'] = moment(timeNextPill).toNow(true);
@@ -216,11 +227,13 @@ app.get('/meds/:id', (request, response) => {
                     max = (v > max) ? v : max;
                 }
 
+                //format start time to local time to display on user page
                 for( let i= 0; i< res.rows.length; i++) {
                     let dateTimeNext = res.rows[i].start_time;
                     res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
                 }
 
+                //find the number of milliseconds to the next pill
                 let minDuration = min - Date.now();
                 console.log("minDuration " + minDuration);
                 let minMili = moment.duration(minDuration).asMilliseconds();

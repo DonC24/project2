@@ -5,17 +5,18 @@ class Home extends React.Component {
     render() {
         return (
             <Layout>
-                <h1>Welcome!</h1>
-                <p>Hello world!</p>
+                <h1>MedTracker</h1>
                 <div id="logindiv">
                     <form method="POST" action="/users/logincheck">
-                        <h1>Login to your account</h1>
-                        <p>Name: <input name="name" /></p>
-                        <p>Password: <input type="password" name="password" /></p>
-                        <input type="submit" value="submit" />
+                        <h2>Login to your account</h2>
+                        <table>
+                            <tr><td>Name:</td> <td><input name="name" /></td></tr>
+                            <tr><td>Password:</td> <td><input type="password" name="password" /></td></tr>
+                        </table>
+                        <input id="loginSubmit" type="submit" value="Submit" class="btn btn-primary" />
                     </form>
                 </div>
-                <a href="/register">Register for an account</a>
+                <a href="/register"><button class="btn btn-outline-primary">Register for an account</button></a>
 
             </Layout>
         );

@@ -15,6 +15,7 @@ let confirmEat = function(){
 
             var confirmBtn = document.createElement('button');
             confirmBtn.innerHTML = "Confirm Medication has been taken";
+            confirmBtn.setAttribute("class", "btn btn-outline-success");
             nextHeader.appendChild(confirmBtn);
 
             confirmBtn.addEventListener('click', doRequest);

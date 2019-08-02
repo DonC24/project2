@@ -8,11 +8,11 @@ class Onemed extends React.Component {
     return (
         <div class="output">
             {/*User Id: {this.props.medData.user_id}<br />*/}
-            Name: {this.props.medData.name}<br />
-            Dose: {this.props.medData.dose} {this.props.medData.dose_category}<br />
-            Next dose in: {this.props.medData.nextTime} ({this.props.medData.start_time.toString()})<br />
-            <a href={`/meds/single/edit/${this.props.medData.id}`}>Edit this entry</a><br />
-            <a href = {`/meds/single/delete/${this.props.medData.id}`}>Delete this entry</a>
+            <p><strong>Name:</strong> {this.props.medData.name}<br />
+            <strong>Dose:</strong> {this.props.medData.dose} {this.props.medData.dose_category}<br />
+            <strong>Next dose in:</strong> {this.props.medData.nextTime} ({this.props.medData.start_time.toString()})<br /></p>
+            <p><a href={`/meds/single/edit/${this.props.medData.id}`}><button class="btn btn-primary">Edit this entry</button></a></p>
+            <p><a href = {`/meds/single/delete/${this.props.medData.id}`}><button class="btn btn-warning">Delete this entry</button></a></p>
         </div>
     );
   }
@@ -35,7 +35,7 @@ class Userpage extends React.Component {
                 <div>
                     {itemElements}
                 </div>
-                <a href="/meds/new">Add medication</a>
+                <a href="/meds/new"><button class="btn btn-info">Add medication</button></a>
 
              <script dangerouslySetInnerHTML={ {__html:
                     `var myVar = '${this.props.minTime}'; var userId = '${this.props.medData[0].user_id}';`

@@ -7,19 +7,28 @@ class New extends React.Component {
         <Layout>
             <h1>Create a new schedule!</h1>
             <form method="POST" action="/meds">
-                {/*<p>User Id: <input type="number" name="user_id" value={this.props.medData.user_id} hidden /></p>*/}
-                <p>Medication Name: <input type="text" name="name"/></p>
-                <p>Dosage: <input type="number" name="dose"/>
-                    <select name="dose_category">
-                        <option value="ml">ml</option>
-                        <option value="pills">pills</option>
-                        <option value="drops">drops</option>
-                    </select>
-                </p>
-                <p>Duration between each dose: <input type="number" name="time_interval" /> hours</p>
-                <p>Time you will start taking your medication: <input type="datetime-local" name="start_time" /></p>
+                <table>
+                <tr>
+                    <td><strong>Medication Name:</strong></td> <td><input type="text" name="name"/></td>
+                </tr>
+                <tr>
+                    <td><strong>Dosage:</strong></td> <td><input type="number" name="dose"/>
+                        <select name="dose_category">
+                            <option value="ml">ml</option>
+                            <option value="pills">pills</option>
+                            <option value="drops">drops</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                <td><strong>Duration between each dose:</strong></td> <td><input type="number" name="time_interval" /> hours</td>
+                </tr>
+                <tr>
+                <td><strong>Time you will start taking your medication:</strong></td> <td><input type="datetime-local" name="start_time" /></td>
+                </tr>
+                </table>
                 <p>--</p>
-                <input type="submit" value="Submit" />
+                <input class="btn btn-primary" type="submit" value="Submit" />
             </form>
         </Layout>
     );
