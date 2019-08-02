@@ -7,6 +7,8 @@ const cookieParser = require('cookie-parser')
 
 const moment = require('moment');
 
+var format = require('pg-format');
+
 let sha256 = require('js-sha256');
 const SALT = "ALL YOUR BASE ARE BELONG TO US";
 
@@ -214,6 +216,11 @@ app.get('/meds/:id', (request, response) => {
                     max = (v > max) ? v : max;
                 }
 
+                for( let i= 0; i< res.rows.length; i++) {
+                    let dateTimeNext = res.rows[i].start_time;
+                    res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+                }
+
                 let minDuration = min - Date.now();
                 console.log("minDuration " + minDuration);
                 let minMili = moment.duration(minDuration).asMilliseconds();
@@ -235,14 +242,15 @@ app.get('/meds/:id', (request, response) => {
     });
 });
 
-//PUT request from timeout
+//PUT request from timeout/confirmation button
 app.put('/meds/:id', (request, response) => {
 
     console.log("inside put req for confirmation");
     var inputId = parseInt(request.params.id);
     console.log(inputId);
 
-    let queryString = "SELECT * FROM medication WHERE user_id = ($1)";
+    //get all medication from user ordered by start time
+    let queryString = "SELECT * FROM medication WHERE user_id = ($1) ORDER BY start_time ASC";
     var idVal = [inputId];
     pool.query(queryString, idVal, (err, res) => {
         if (err) {
@@ -254,6 +262,7 @@ app.put('/meds/:id', (request, response) => {
             let now = moment();
             console.log("now: " + now);
 
+            //check if time now is after start time. if it is, add interval to previous start time
             for(let i = 0; i<med.length; i++){
                 if (moment(now).isAfter(med[i].start_time)){
                     med[i].start_time = moment(med[i].start_time).add(med[i].time_interval, 'h').local().format();
@@ -263,16 +272,20 @@ app.put('/meds/:id', (request, response) => {
             }
             console.log(med);
 
-            /*let queryString = "UPDATE medication SET name=($1), dose=($2), dose_category=($3), time_interval=($4), start_time=($5) WHERE id = ($6)";
-            let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, newMed.user_id];
+            //update start time in medication list to new start time.
+            for(let j = 0;  j < med.length; j++){
+                let queryString = "UPDATE medication SET start_time=($1) WHERE id = ($2)";
+                let values = [med[j].start_time, med[j].id];
 
-            pool.query(queryString, values, (err, res) => {
-                if (err) {
-                    console.log("query error", err.message);
-                } else {
-                    response.redirect(`/meds/${newMed.user_id}`);
-                }
-            }*/
+                pool.query(queryString, values, (err, res) => {
+                    if (err) {
+                        console.log("query error", err.message);
+                    }
+                })
+            }
+
+            setTimeout(function(){response.redirect(`/meds/${med[0].user_id}`)}, 2000);
+
         }
     });
 });

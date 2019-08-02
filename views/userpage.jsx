@@ -10,7 +10,7 @@ class Onemed extends React.Component {
             {/*User Id: {this.props.medData.user_id}<br />*/}
             Name: {this.props.medData.name}<br />
             Dose: {this.props.medData.dose} {this.props.medData.dose_category}<br />
-            Next dose in: {this.props.medData.nextTime}<br />
+            Next dose in: {this.props.medData.nextTime} ({this.props.medData.start_time.toString()})<br />
             <a href={`/meds/single/edit/${this.props.medData.id}`}>Edit this entry</a><br />
             <a href = {`/meds/single/delete/${this.props.medData.id}`}>Delete this entry</a>
         </div>
@@ -30,8 +30,8 @@ class Userpage extends React.Component {
 
         return (
             <Layout>
-            <h1>{this.props.medData[0].user_name}'s page</h1>
-                <h3>Your next pill is {this.props.medData.name}</h3>
+            <h1>{this.props.medData[0].user_name}'s MedTracker page</h1>
+                <h3 id="nextMedHead">Your next medication is {this.props.medData[0].name}</h3>
                 <div>
                     {itemElements}
                 </div>

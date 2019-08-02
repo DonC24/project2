@@ -8,12 +8,18 @@ let confirmEat = function(){
     console.log("userId in confirmEat " + userId);
     console.log("outputs");
     console.log(outputs);
-    //append button to output
-    var confirmBtn = document.createElement('button');
-    confirmBtn.innerHTML = "Confirm Medication has been taken";
-    outputs[0].appendChild(confirmBtn);
+    let nextHeader = document.getElementById('nextMedHead');
 
-    confirmBtn.addEventListener('click', doRequest());
+    //append button to output
+    //for(let i = 0; i<outputs.length; i++){
+
+            var confirmBtn = document.createElement('button');
+            confirmBtn.innerHTML = "Confirm Medication has been taken";
+            nextHeader.appendChild(confirmBtn);
+
+            confirmBtn.addEventListener('click', doRequest);
+
+    //}
 
 };
 
@@ -111,42 +117,3 @@ window.onload = () => {
     }*/
 
 };
-
-
-
-
-
-/*var button = document.querySelector('#hello');
-
-button.addEventListener('click', function(event){
-  alert('WOW CLICKED');
-  var input = document.querySelector('#studentId');
-  var studentId = input.value;
-
-  doRequest( studentId );
-});
-
-var doRequest = function(studentId){
-
-  // what to do when we recieve the request
-  var responseHandler = function() {
-    console.log("response text", this.responseText);
-    console.log("status text", this.statusText);
-    console.log("status code", this.status);
-  };
-
-  // make a new request
-  var request = new XMLHttpRequest();
-
-  // listen for the request response
-  request.addEventListener("load", responseHandler);
-
-  // ready the system by calling open, and specifying the url
-  // request.open("GET", "https://swapi.co/api/people/1");
-  request.open("GET", "http://localhost:3000/students/"+studentId);
-
-  // send the request
-  request.send();
-
-
-};*/
