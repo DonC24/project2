@@ -12,7 +12,7 @@ class New extends React.Component {
                     <td><strong>Medication Name:</strong></td> <td><input type="text" name="name"/></td>
                 </tr>
                 <tr>
-                    <td><strong>Dosage:</strong></td> <td><input type="number" name="dose"/>
+                    <td><strong>Dosage:</strong></td> <td><input type="number" min="0" name="dose"/>
                         <select name="dose_category">
                             <option value="ml">ml</option>
                             <option value="pills">pills</option>

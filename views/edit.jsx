@@ -23,7 +23,7 @@ class Editmed extends React.Component {
                 <p><strong>Medication Name:</strong> {this.props.med.name} <br />
                  <input type="text" name="name" value={this.props.med.name}/></p>
                 <p><strong>Dosage:</strong> {this.props.med.dose} {this.props.med.dose_category} <br />
-                 <strong>New dosage:</strong> <input type="number" name="dose" value={this.props.med.dose} />
+                 <strong>New dosage:</strong> <input type="number" min="0" name="dose" value={this.props.med.dose} />
                     <select name="dose_category" value={this.props.med.dose_category}>
                         <option value="ml">ml</option>
                         <option value="pills">pills</option>

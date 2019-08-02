@@ -163,6 +163,7 @@ app.get('/meds/single/edit/:id', (request, response) => {
 
 //Updates the SQL with new info for single medication
 app.put('/meds/single/edit/:id', (request, response) => {
+    console.log("inside single edit put");
     var inputId = parseInt(request.params.id);
     console.log(request.body);
     var newMed = request.body;
@@ -172,6 +173,7 @@ app.put('/meds/single/edit/:id', (request, response) => {
 
     if (timeNextPill < now){
         timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').local().format();
+        console.log("timeNextPill " + timeNextPill);
     } else {
         console.log("no need to update time");
     }
@@ -180,7 +182,7 @@ app.put('/meds/single/edit/:id', (request, response) => {
     // console.log("new start" + newStart);
 
     let queryString = "UPDATE medication SET name=($1), dose=($2), dose_category=($3), time_interval=($4), start_time=($5) WHERE id = ($6)";
-    let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, newMed.user_id];
+    let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, newMed.id];
 
     pool.query(queryString, values, (err, res) => {
         if (err) {
