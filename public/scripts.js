@@ -83,50 +83,6 @@ window.onload = () => {
     setTimeout(spawnNotification, myVar);
     setTimeout(confirmEat, myVar);
 
-/*    notification.onclick = function(event){
-        alert('WOW CLICKED');
-        var studentId = input.value;
 
-        doRequest( studentId );
-    };
-*/
-
-
-
-
-/*    self.registration.showNotification("Take your medicine!", {
-        actions: [
-            {
-                action: 'confirm',
-                title: 'Taken medicine'
-            },
-            {
-                action: 'Snooze',
-                title: 'Snooze'
-            }
-        ]
-    });
-
-    self.addEventListener('notificationclick', function(event) {
-        event.notification.close();
-        if (event.action === 'Taken') {
-            // Archive action was clicked
-            console.log('medicine was taken');
-            //archiveEmail();
-        } else {
-            // Main body of notification was clicked
-            //clients.openWindow('/inbox');
-            console.log('snooze. need to resend notification');
-        }
-    }, false);*/
-
-    //const myVar; // 1 day in milliseconds
-    /*const notificationTimer = localStorage.getItem('notificationTimer');
-    if(notificationTimer){
-        const sendNotification = (Date.now() - (new Date(notificationTimer)).getTime()) > myVar;
-        if(sendNotification){
-            const notification = new Notification('Displaying reminder to take your meds');
-        }
-    }*/
 
 };

@@ -131,6 +131,7 @@ app.put('/meds/updates/:id', (request, response) => {
                     if (err) {
                         console.log("query error", err.message);
                     } else{
+                        //insert into confirmation table that medication was taken
                         let timestamp = moment();
                         const queryString3 = "INSERT INTO confirmation (medication_id, time_taken) VALUES ($1, $2) RETURNING *"
                         const values3 = [med[j].id, timestamp];
@@ -147,60 +148,10 @@ app.put('/meds/updates/:id', (request, response) => {
             }
 
             setTimeout(function(){response.redirect(`/meds/${med[0].user_id}`)}, 2000);
-
-            //setTimeout(function(){response.send("done updating")}, 2000);
-
         }
     });
 });
 
-
-
-/*    console.log(request.body);
-    var newMed = request.body;
-
-    let now = moment();
-    let timeNextPill = newMed.start_time;
-
-    if (timeNextPill < now){
-        timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').local().format();
-    } else {
-        console.log("no need to update time");
-    }
-
-    // let newStart = moment(res.rows[0].start_time).add(res.rows[0].time_interval, 'h').local().format();
-    // console.log("new start" + newStart);
-
-    let queryString = "UPDATE medication SET name=($1), dose=($2), dose_category=($3), time_interval=($4), start_time=($5) WHERE id = ($6)";
-    let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, newMed.user_id];
-
-    pool.query(queryString, values, (err, res) => {
-        if (err) {
-            console.log("query error", err.message);
-        } else {
-            response.redirect(`/meds/${newMed.user_id}`);
-        }
-    });
-});*/
-
-//Insert new entry into confirmation log
-/*app.post('/meds/:id/confirm', (request, response) => {
-    console.log("in confirmation post");
-    console.log(request.body);
-    console.log("id " + request.params.id);
-    let timestamp = Date.now();
-    const queryString = "INSERT INTO confirmation (medication_id, time_taken) VALUES ($1, $2) RETURNING *"
-    const values = [request.body, timestamp];
-
-    pool.query(queryString, values, (err, res) => {
-        if (err) {
-            console.log("query error", err.message);
-        } else {
-            console.log("confirmation inserted");
-        }
-    })
-});
-*/
 
 //delete a medication
 app.get('/meds/single/delete/:id', (request, response) => {
@@ -287,9 +238,6 @@ app.put('/meds/single/edit/:id', (request, response) => {
         console.log("no need to update time");
     }
 
-    // let newStart = moment(res.rows[0].start_time).add(res.rows[0].time_interval, 'h').local().format();
-    // console.log("new start" + newStart);
-
     let queryString = "UPDATE medication SET name=($1), dose=($2), dose_category=($3), time_interval=($4), start_time=($5) WHERE id = ($6)";
     let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, newMed.id];
 
@@ -321,6 +269,30 @@ app.post('/meds', (request, response) => {
             response.redirect(`/meds/${userId}`);
         }
 
+    });
+});
+
+app.get('/meds/:id/log', (request, response) => {
+
+    console.log(response.body);
+
+    const queryString = "SELECT medication.id AS med_id,medication.name, medication.user_id, confirmation.id, confirmation.medication_id, confirmation.time_taken FROM medication INNER JOIN confirmation ON (medication.id = confirmation.medication_id) WHERE medication.user_id = $1 ORDER BY confirmation.time_taken DESC";
+
+    const values = [parseInt(request.params.id)];
+
+    pool.query(queryString, values, (err, res) => {
+        if (err) {
+            console.log("query error", err.message);
+
+        } else {
+            //console.log(res.rows);
+
+            console.log(res.rows);
+            const data = {
+                logData : res.rows
+            }
+            response.render('medlog', data);
+        }
     });
 });
 
@@ -394,8 +366,6 @@ app.get('/meds/:id', (request, response) => {
         }
     });
 });
-
-
 
 
 //POST register user
