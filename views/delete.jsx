@@ -13,7 +13,7 @@ class Deletemed extends React.Component {
 
     return (
 
-        <Layout>
+        <Layout cookieLogin={this.props.cookieLogin} cookieUserId={this.props.cookieUserId}>
             <h1>Confirm deletion of this medication!</h1>
             <form method="POST" action={url}>
                 <input type="hidden" name="id" value={this.props.med.id} />

@@ -69,8 +69,8 @@ window.onload = () => {
 
 
     let spawnNotification = function(title,theBody,shouldRequireInteraction) {
+        var title = "MedTracker Notification";
         var options = {
-            title: "MedTrack Notification",
             body: "Reminder to take your medication!",
             requireInteraction: true
         }
@@ -79,10 +79,6 @@ window.onload = () => {
 
     //confirmBtn.addEventListener('click', function(){doRequest();});
 
-
     setTimeout(spawnNotification, myVar);
     setTimeout(confirmEat, myVar);
-
-
-
 };

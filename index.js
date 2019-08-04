@@ -94,87 +94,105 @@ app.engine('jsx', reactEngine);
 
 //PUT request from timeout/confirmation button
 app.put('/meds/updates/:id', (request, response) => {
-    console.log(request.params);
-    console.log("inside put req for confirmation");
-    var inputId = parseInt(request.params.id);
-    console.log(inputId);
+    if (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]){
+        console.log(request.params);
+        console.log("inside put req for confirmation");
+        var inputId = parseInt(request.params.id);
+        console.log(inputId);
 
-    //get all medication from user ordered by start time
-    let queryString = "SELECT * FROM medication WHERE user_id = ($1) ORDER BY start_time ASC";
-    var idVal = [inputId];
-    pool.query(queryString, idVal, (err, res) => {
-        if (err) {
-            console.log("query error", err.message);
-        } else {
-            let med = res.rows;
-            console.log(med);
+        //get all medication from user ordered by start time
+        let queryString = "SELECT * FROM medication WHERE user_id = ($1) ORDER BY start_time ASC";
+        var idVal = [inputId];
+        pool.query(queryString, idVal, (err, res) => {
+            if (err) {
+                console.log("query error", err.message);
+            } else {
+                let med = res.rows;
+                console.log(med);
 
-            let now = moment();
-            console.log("now: " + now);
+                let now = moment();
+                console.log("now: " + now);
 
-            //check if time now is after start time. if it is, add interval to previous start time
-            for(let i = 0; i<med.length; i++){
-                if (moment(now).isAfter(med[i].start_time)){
-                    med[i].start_time = moment(med[i].start_time).add(med[i].time_interval, 'h').local().format();
-                } else {
-                    console.log("do nothing");
-                }
-            }
-            console.log(med);
-
-            //update start time in medication list to new start time.
-            for(let j = 0;  j < med.length; j++){
-                let queryString2 = "UPDATE medication SET start_time=($1) WHERE id = ($2)";
-                let values2 = [med[j].start_time, med[j].id];
-
-                pool.query(queryString2, values2, (err, res) => {
-                    if (err) {
-                        console.log("query error", err.message);
-                    } else{
-                        //insert into confirmation table that medication was taken
-                        let timestamp = moment();
-                        const queryString3 = "INSERT INTO confirmation (medication_id, time_taken) VALUES ($1, $2) RETURNING *"
-                        const values3 = [med[j].id, timestamp];
-
-                        pool.query(queryString3, values3, (err, res) => {
-                            if (err) {
-                                console.log("query error", err.message);
-                            } else {
-                                console.log("confirmation inserted");
-                            }
-                        })
+                //check if time now is after start time. if it is, add interval to previous start time
+                for(let i = 0; i<med.length; i++){
+                    if (moment(now).isAfter(med[i].start_time)){
+                        med[i].start_time = moment(med[i].start_time).add(med[i].time_interval, 'h').local().format();
+                    } else {
+                        console.log("do nothing");
                     }
-                })
-            }
+                }
+                console.log(med);
 
-            setTimeout(function(){response.redirect(`/meds/${med[0].user_id}`)}, 2000);
-        }
-    });
+                //update start time in medication list to new start time.
+                for(let j = 0;  j < med.length; j++){
+                    let queryString2 = "UPDATE medication SET start_time=($1) WHERE id = ($2)";
+                    let values2 = [med[j].start_time, med[j].id];
+
+                    pool.query(queryString2, values2, (err, res) => {
+                        if (err) {
+                            console.log("query error", err.message);
+                        } else{
+                            //insert into confirmation table that medication was taken
+                            let timestamp = moment();
+                            const queryString3 = "INSERT INTO confirmation (medication_id, time_taken) VALUES ($1, $2) RETURNING *"
+                            const values3 = [med[j].id, timestamp];
+
+                            pool.query(queryString3, values3, (err, res) => {
+                                if (err) {
+                                    console.log("query error", err.message);
+                                } else {
+                                    console.log("confirmation inserted");
+                                }
+                            })
+                        }
+                    })
+                }
+
+                setTimeout(function(){response.redirect(`/meds/${med[0].user_id}`)}, 2000);
+            }
+        });
+    } else {
+        response.clearCookie('User');
+        response.clearCookie('loggedin');
+        response.redirect('/');
+    }
 });
 
 
 //delete a medication
 app.get('/meds/single/delete/:id', (request, response) => {
-    var inputId = parseInt(request.params.id);
-    let queryString = "SELECT * FROM medication WHERE id = ($1)";
-    var idVal = [inputId];
-    pool.query(queryString, idVal, (err, res) => {
-        if (err) {
-            console.log("query error", err.message);
-        } else {
-            //format start time to local time to display on user page
-            for( let i= 0; i< res.rows.length; i++) {
-                let dateTimeNext = res.rows[i].start_time;
-                res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
-            }
 
-            const data = {
-                med : res.rows[0]
-            };
-            //console.log(data);
-            response.render('delete', data);
-        }
-    });
+    if (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]){
+        let cookieLogin = (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]) ? true : false;
+        let cookieUserId = request.cookies['User'];
+        var inputId = parseInt(request.params.id);
+        let queryString = "SELECT * FROM medication WHERE id = ($1)";
+        var idVal = [inputId];
+        pool.query(queryString, idVal, (err, res) => {
+            if (err) {
+                console.log("query error", err.message);
+            } else {
+                //format start time to local time to display on user page
+                for( let i= 0; i< res.rows.length; i++) {
+                    let dateTimeNext = res.rows[i].start_time;
+                    res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+                }
+
+                const data = {
+                    med : res.rows[0],
+                    cookieLogin: cookieLogin,
+                    cookieUserId: cookieUserId
+                };
+                //console.log(data);
+                response.render('delete', data);
+            }
+        });
+    } else {
+        response.clearCookie('User');
+        response.clearCookie('loggedin');
+        response.redirect('/');
+    }
+
 });
 
 app.delete('/meds/single/:id', (request, response) => {
@@ -197,28 +215,37 @@ app.delete('/meds/single/:id', (request, response) => {
 
 //get edit page of single medication
 app.get('/meds/single/edit/:id', (request, response) => {
-    var inputId = parseInt(request.params.id);
-    let queryString = "SELECT * FROM medication WHERE id = ($1)";
-    var idVal = [inputId];
-    pool.query(queryString, idVal, (err, res) => {
-        if (err) {
-            console.log("query error", err.message);
-        } else {
+    if (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]){
+        let cookieLogin = (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]) ? true : false;
+        let cookieUserId = request.cookies['User'];
+        var inputId = parseInt(request.params.id);
+        let queryString = "SELECT * FROM medication WHERE id = ($1)";
+        var idVal = [inputId];
+        pool.query(queryString, idVal, (err, res) => {
+            if (err) {
+                console.log("query error", err.message);
+            } else {
 
-            //format start time to local time to display on user page
-            for( let i= 0; i< res.rows.length; i++) {
-                let dateTimeNext = res.rows[i].start_time;
-                res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+                //format start time to local time to display on user page
+                for( let i= 0; i< res.rows.length; i++) {
+                    let dateTimeNext = res.rows[i].start_time;
+                    res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+                }
+
+                const data = {
+                    med : res.rows[0],
+                    cookieLogin: cookieLogin,
+                    cookieUserId: cookieUserId
+                };
+                console.log(data);
+                response.render('edit', data);
             }
-
-
-            const data = {
-                med : res.rows[0]
-            };
-            console.log(data);
-            response.render('edit', data);
-        }
-    });
+        });
+    } else {
+        response.clearCookie('User');
+        response.clearCookie('loggedin');
+        response.redirect('/');
+    }
 });
 
 //Updates the SQL with new info for single medication
@@ -229,7 +256,9 @@ app.put('/meds/single/edit/:id', (request, response) => {
     var newMed = request.body;
 
     let now = moment();
-    let timeNextPill = newMed.start_time;
+    let timeNextPill = moment(newMed.start_time).format()
+    now = Date.parse(now)
+    timeNextPill = Date.parse(timeNextPill);
 
     if (timeNextPill < now){
         timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').local().format();
@@ -257,6 +286,21 @@ app.post('/meds', (request, response) => {
     // console.log( newMed );
     // console.log("user Id " + userId);
     // console.log(typeof userId);
+
+    let now = moment();
+    console.log(now);
+    let timeNextPill = moment(newMed.start_time).format()
+    //need to use Date.parse before comparison otherwise date time cannot be compared
+    now = Date.parse(now)
+    timeNextPill = Date.parse(timeNextPill);
+    console.log(timeNextPill < now);
+    if (timeNextPill < now){
+        timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').local().format();
+        console.log("timeNextPill " + timeNextPill);
+    } else {
+        console.log("no need to update time");
+    }
+
     const queryString = 'INSERT INTO medication (name, dose, dose_category, time_interval, start_time, user_id) VALUES ($1, $2, $3, $4, $5, $6)';
     let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, newMed.start_time, userId];
     pool.query(queryString, values, (err, res) => {
@@ -272,99 +316,124 @@ app.post('/meds', (request, response) => {
     });
 });
 
+//get log of medications taken
 app.get('/meds/:id/log', (request, response) => {
+    if (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]){
+        let cookieLogin = (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]) ? true : false;
+        let cookieUserId = request.cookies['User'];
 
-    console.log(response.body);
+        console.log(response.body);
 
-    const queryString = "SELECT medication.id AS med_id,medication.name, medication.user_id, confirmation.id, confirmation.medication_id, confirmation.time_taken FROM medication INNER JOIN confirmation ON (medication.id = confirmation.medication_id) WHERE medication.user_id = $1 ORDER BY confirmation.time_taken DESC";
+        const queryString = "SELECT medication.id AS med_id,medication.name, medication.user_id, confirmation.id, confirmation.medication_id, confirmation.time_taken FROM medication INNER JOIN confirmation ON (medication.id = confirmation.medication_id) WHERE medication.user_id = $1 ORDER BY confirmation.time_taken DESC";
 
-    const values = [parseInt(request.params.id)];
+        const values = [parseInt(request.params.id)];
 
-    pool.query(queryString, values, (err, res) => {
-        if (err) {
-            console.log("query error", err.message);
+        pool.query(queryString, values, (err, res) => {
+            if (err) {
+                console.log("query error", err.message);
 
-        } else {
-            //console.log(res.rows);
+            } else {
+                //console.log(res.rows);
 
-            console.log(res.rows);
-            const data = {
-                logData : res.rows
+                console.log(res.rows);
+                const data = {
+                    logData : res.rows,
+                    cookieLogin: cookieLogin,
+                    cookieUserId: cookieUserId
+                }
+                response.render('medlog', data);
             }
-            response.render('medlog', data);
-        }
-    });
+        });
+    } else {
+        response.clearCookie('User');
+        response.clearCookie('loggedin');
+        response.redirect('/');
+    }
 });
 
+//render form to add new medication
 app.get('/meds/new', (request, response) => {
-    response.render('new');
+    if (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]){
+        let cookieLogin = (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]) ? true : false;
+        let cookieUserId = request.cookies['User'];
+        const data = {
+            cookieLogin: cookieLogin,
+            cookieUserId: cookieUserId
+        }
+        response.render('new', data);
+    } else {
+        response.clearCookie('User');
+        response.clearCookie('loggedin');
+        response.redirect('/');
+    }
 });
 
 //page for all medication of user
 app.get('/meds/:id', (request, response) => {
+    if (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]){
+        let cookieLogin = (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]) ? true : false;
+        console.log(response.body);
 
-    console.log(response.body);
+        const queryString = "SELECT medication.id,medication.name,medication.dose,medication.dose_category,medication.start_time,medication.time_interval,medication.user_id,users.name AS user_name FROM medication INNER JOIN users ON (users.id = medication.user_id) WHERE medication.user_id = $1 ORDER BY medication.start_time ASC";
 
-    const queryString = "SELECT medication.id,medication.name,medication.dose,medication.dose_category,medication.start_time,medication.time_interval,medication.user_id,users.name AS user_name FROM medication INNER JOIN users ON (users.id = medication.user_id) WHERE medication.user_id = $1 ORDER BY medication.start_time ASC";
+        const values = [parseInt(request.params.id)];
 
-    const values = [parseInt(request.params.id)];
-
-    pool.query(queryString, values, (err, res) => {
-        if (err) {
-            console.log("query error", err.message);
-
-        } else {
-            //console.log(res.rows);
-
-
-            if(res.rows[0] === undefined){
-                const data = {
-                    medData : res.rows
-                }
-                response.render('userpage', data);
+        pool.query(queryString, values, (err, res) => {
+            if (err) {
+                console.log("query error", err.message);
             } else {
+                //console.log(res.rows);
+                if(res.rows[0] === undefined){
+                    const data = {
+                        medData : res.rows
+                    }
+                    response.render('userpage', data);
+                } else {
+                    //find out how long to next pill (eg: in 2 hours)
+                    for( let i= 0; i< res.rows.length; i++) {
+                        let timeNextPill = res.rows[i].start_time;
+                        res.rows[i]['nextTime'] = moment(timeNextPill).toNow(true);
+                    }
 
-                //find out how long to next pill (eg: in 2 hours)
-                for( let i= 0; i< res.rows.length; i++) {
-                    let timeNextPill = res.rows[i].start_time;
-                    res.rows[i]['nextTime'] = moment(timeNextPill).toNow(true);
+                    //find shortest time to next pill
+                    let min = res.rows[0].start_time, max = res.rows[0].start_time;
+                    for (let i = 0, len=res.rows.length; i < len; i++) {
+                        let v = res.rows[i].start_time;
+                        min = (v < min) ? v : min;
+                        max = (v > max) ? v : max;
+                    }
+
+                    //format start time to local time to display on user page
+                    for( let i= 0; i< res.rows.length; i++) {
+                        let dateTimeNext = res.rows[i].start_time;
+                        res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+                    }
+
+                    //find the number of milliseconds to the next pill
+                    let minDuration = min - Date.now();
+                    console.log("minDuration " + minDuration);
+                    let minMili = moment.duration(minDuration).asMilliseconds();
+                    console.log("minMili " + minMili);
+                    //let nextPill = moment(res.rows[0].start_time).toNow();
+                    //let currentTime = moment();
+                    //console.log(nextPill);
+                    //console.log(currentTime);
+                    // console.log("next time " + res.rows[0].nextTime);
+                    console.log(res.rows);
+                    const data = {
+                        medData : res.rows,
+                        minTime : minMili,
+                        cookieLogin: cookieLogin
+                    }
+                    response.render('userpage', data);
                 }
-
-                //find shortest time to next pill
-                let min = res.rows[0].start_time, max = res.rows[0].start_time;
-
-                for (let i = 0, len=res.rows.length; i < len; i++) {
-                    let v = res.rows[i].start_time;
-                    min = (v < min) ? v : min;
-                    max = (v > max) ? v : max;
-                }
-
-                //format start time to local time to display on user page
-                for( let i= 0; i< res.rows.length; i++) {
-                    let dateTimeNext = res.rows[i].start_time;
-                    res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
-                }
-
-                //find the number of milliseconds to the next pill
-                let minDuration = min - Date.now();
-                console.log("minDuration " + minDuration);
-                let minMili = moment.duration(minDuration).asMilliseconds();
-                console.log("minMili " + minMili);
-                //let nextPill = moment(res.rows[0].start_time).toNow();
-                //let currentTime = moment();
-                //console.log(nextPill);
-                //console.log(currentTime);
-                // console.log("next time " + res.rows[0].nextTime);
-                console.log(res.rows);
-                const data = {
-                    medData : res.rows,
-                    minTime : minMili
-                }
-                response.render('userpage', data);
             }
-
-        }
-    });
+        });
+    } else {
+        response.clearCookie('User');
+        response.clearCookie('loggedin');
+        response.redirect('/');
+    }
 });
 
 
@@ -438,14 +507,18 @@ app.post('/users/logincheck', (request, response) => {
     });
 });
 
-
-
 app.get('/register', (request, response) => {
     response.render('register');
 });
 
 app.get('/', (request, response) => {
-    response.render('home');
+    if (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]){
+        let cookieLogin = (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]) ? true : false;
+        let userId = request.cookies['User'];
+        response.redirect(`/meds/${userId}`);
+    } else {
+        response.render('home');
+    }
 });
 
 

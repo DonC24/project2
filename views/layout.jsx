@@ -2,6 +2,13 @@ var React = require('react');
 
 class Layout extends React.Component {
   render() {
+    //let cookieLogin = this.props.cookieLogin;
+    //console.log(cookieLogin);
+    console.log(this.props.cookieUserId);
+    let cookieLogin = this.props.cookieLogin ? "Logout":"Login";
+    let url = this.props.cookieLogin ? "/logout":"/";
+
+
     return (
       <html>
         <head>
@@ -29,7 +36,7 @@ class Layout extends React.Component {
                     <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href={`/meds/${this.props.cookieUserId}/log`}>Medication Log</a>
                   </li>
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -43,16 +50,10 @@ class Layout extends React.Component {
                     </div>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/" tabindex="-1">Login</a>
+                    <a class="nav-link" href={url} tabindex="-1">{cookieLogin}</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/logout" tabindex="-1">Logout</a>
-                  </li>
+
                 </ul>
-{/*                <form class="form-inline my-2 my-lg-0">
-                  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
-                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>*/}
               </div>
             </nav>
             {this.props.children}
