@@ -296,13 +296,13 @@ app.post('/meds', (request, response) => {
     console.log(timeNextPill < now);
     if (timeNextPill < now){
         timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').local().format();
-        console.log("timeNextPill " + timeNextPill);
+        //console.log("timeNextPill " + timeNextPill);
     } else {
         console.log("no need to update time");
     }
 
     const queryString = 'INSERT INTO medication (name, dose, dose_category, time_interval, start_time, user_id) VALUES ($1, $2, $3, $4, $5, $6)';
-    let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, newMed.start_time, userId];
+    let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, userId];
     pool.query(queryString, values, (err, res) => {
         if (err) {
             console.log("query error", err.message);
