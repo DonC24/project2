@@ -368,13 +368,15 @@ app.get('/meds/new', (request, response) => {
     }
 });
 
-//page for all medication of user
+//main page which renders all medication of user
 app.get('/meds/:id', (request, response) => {
     if (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]){
-        let cookieLogin = (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]) ? true : false;
-        console.log(response.body);
+        var cookieLogin = (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]) ? true : false;
+        var cookieUserId = request.cookies['User'];
+        console.log("get cookies user id: "+ cookieUserId);
+        //console.log(response.body);
 
-        const queryString = "SELECT medication.id,medication.name,medication.dose,medication.dose_category,medication.start_time,medication.time_interval,medication.user_id,users.name AS user_name FROM medication INNER JOIN users ON (users.id = medication.user_id) WHERE medication.user_id = $1 ORDER BY medication.start_time ASC";
+        const queryString = "SELECT medication.id,medication.name AS med_name,medication.dose,medication.dose_category,medication.start_time,medication.time_interval,medication.user_id,users.name FROM medication INNER JOIN users ON (users.id = medication.user_id) WHERE medication.user_id = $1 ORDER BY medication.start_time ASC";
 
         const values = [parseInt(request.params.id)];
 
@@ -382,12 +384,26 @@ app.get('/meds/:id', (request, response) => {
             if (err) {
                 console.log("query error", err.message);
             } else {
-                //console.log(res.rows);
+                console.log(res.rows);
                 if(res.rows[0] === undefined){
-                    const data = {
-                        medData : res.rows
-                    }
-                    response.render('userpage', data);
+                    console.log(cookieUserId);
+                    const queryString = "SELECT name FROM users WHERE id = $1";
+                    const values = [parseInt(request.params.id)];
+                    let anylogdata = false;
+                    pool.query(queryString, values, (err, res) => {
+                        if (err) {
+                            console.log("query error", err.message);
+                        } else {
+                            console.log(res.rows);
+                                const data = {
+                                    medData : res.rows,
+                                    cookieLogin: cookieLogin,
+                                    cookieUserId : cookieUserId,
+                                    anylogdata : anylogdata
+                                }
+                                response.render('userpage', data);
+                        }
+                    })
                 } else {
                     //find out how long to next pill (eg: in 2 hours)
                     for( let i= 0; i< res.rows.length; i++) {
@@ -414,6 +430,8 @@ app.get('/meds/:id', (request, response) => {
                     console.log("minDuration " + minDuration);
                     let minMili = moment.duration(minDuration).asMilliseconds();
                     console.log("minMili " + minMili);
+
+                    let anylogdata =true
                     //let nextPill = moment(res.rows[0].start_time).toNow();
                     //let currentTime = moment();
                     //console.log(nextPill);
@@ -423,7 +441,8 @@ app.get('/meds/:id', (request, response) => {
                     const data = {
                         medData : res.rows,
                         minTime : minMili,
-                        cookieLogin: cookieLogin
+                        cookieLogin: cookieLogin,
+                        anylogdata : anylogdata
                     }
                     response.render('userpage', data);
                 }

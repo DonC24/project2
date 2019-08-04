@@ -78,7 +78,11 @@ window.onload = () => {
     }
 
     //confirmBtn.addEventListener('click', function(){doRequest();});
+    if (myVar === 'new'){
+        console.log("myVar is null");
+    } else {
+        setTimeout(spawnNotification, myVar);
+        setTimeout(confirmEat, myVar);
+    }
 
-    setTimeout(spawnNotification, myVar);
-    setTimeout(confirmEat, myVar);
 };

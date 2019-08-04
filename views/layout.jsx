@@ -8,6 +8,11 @@ class Layout extends React.Component {
     let cookieLogin = this.props.cookieLogin ? "Logout":"Login";
     let url = this.props.cookieLogin ? "/logout":"/";
 
+    console.log('anylogdata: ' + this.props.anylogdata);
+    let classdis = this.props.anylogdata ? "nav-link" : "nav-link disabled";
+    let ariadis = this.props.anylogdata ? false : true;
+    let logurl = this.props.anylogdata ? `/meds/${this.props.cookieUserId}/log` : "#";
+
 
     return (
       <html>
@@ -36,19 +41,9 @@ class Layout extends React.Component {
                     <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href={`/meds/${this.props.cookieUserId}/log`}>Medication Log</a>
+                    <a class={classdis} href={logurl} aria-disabled={ariadis}>Medication Log</a>
                   </li>
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Dropdown
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                  </li>
+
                   <li class="nav-item">
                     <a class="nav-link" href={url} tabindex="-1">{cookieLogin}</a>
                   </li>
