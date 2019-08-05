@@ -439,7 +439,7 @@ app.get('/meds/:id', (request, response) => {
                     //format start time to local time to display on user page
                     for( let i= 0; i< res.rows.length; i++) {
                         let dateTimeNext = res.rows[i].start_time;
-                        res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+                        res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a ZZ");
                     }
 
                     //find the number of milliseconds to the next pill
