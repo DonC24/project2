@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS medication (
     name TEXT,
     dose INTEGER,
     dose_category TEXT,
-    start_time TIMESTAMPZ,
+    start_time TIMESTAMPTZ,
     time_interval INTEGER,
     user_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES users (id)
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS medication (
 CREATE TABLE IF NOT EXISTS confirmation (
 	id SERIAL PRIMARY KEY,
 	medication_id INTEGER,
-	time_taken TIMESTAMPZ,
+	time_taken TIMESTAMPTZ,
 	photo TEXT,
 	FOREIGN KEY (medication_id) REFERENCES medication (id)
 );
