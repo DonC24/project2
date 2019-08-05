@@ -349,6 +349,12 @@ app.get('/meds/:id/log', (request, response) => {
                 } else {
                     //console.log(res.rows);
 
+                    //format log time to local time to display
+                    for( let i= 0; i< res.rows.length; i++) {
+                        let dateTimeNext = res.rows[i].time_taken;
+                        res.rows[i]['time_taken'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a ZZ");
+                    }
+
                     let anylogdata =true;
                     const data = {
                         logData : res.rows,

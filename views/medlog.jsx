@@ -35,7 +35,7 @@ class Medlog extends React.Component {
                 <div class="item-container">
                     {itemElements}
                 </div>
-                <a href={url}>Go back</a>
+                <a class="btn btn-primary" href={url}>Go back</a>
             </Layout>
         );
     }
