@@ -296,7 +296,7 @@ app.post('/meds', (request, response) => {
     // console.log(typeof userId);
 
     //let now = moment().utcOffset(8).format();
-    let now = moment.format();
+    let now = moment().format();
     console.log(now);
     //let timeNextPill = moment(newMed.start_time).utcOffset(8).format();
     let timeNextPill = moment(newMed.start_time).format();
