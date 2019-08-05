@@ -4,7 +4,7 @@ const Layout = require('./layout.jsx');
 class New extends React.Component {
   render() {
     return (
-        <Layout cookieLogin={this.props.cookieLogin} cookieUserId={this.props.cookieUserId}>
+        <Layout cookieLogin={this.props.cookieLogin} cookieUserId={this.props.cookieUserId} anylogdata={this.props.anylogdata}>
             <h1>Create a new schedule!</h1>
             <form method="POST" action="/meds">
                 <table>

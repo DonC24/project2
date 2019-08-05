@@ -15,7 +15,7 @@ class Editmed extends React.Component {
 
     return (
 
-        <Layout cookieLogin={this.props.cookieLogin} cookieUserId={this.props.cookieUserId}>
+        <Layout cookieLogin={this.props.cookieLogin} cookieUserId={this.props.cookieUserId} anylogdata={this.props.anylogdata}>
             <h1>Edit this medication!</h1>
             <form method="POST" action={url}>
                 <div class="form-group">

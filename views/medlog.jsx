@@ -27,7 +27,7 @@ class Medlog extends React.Component {
         let url = "/meds/" + this.props.logData[0].user_id;
 
         return (
-            <Layout cookieLogin={this.props.cookieLogin} cookieUserId={this.props.cookieUserId}>
+            <Layout cookieLogin={this.props.cookieLogin} cookieUserId={this.props.cookieUserId} anylogdata={this.props.anylogdata}>
                 <h1>Medication Log</h1>
 
                 <div>
