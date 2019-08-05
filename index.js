@@ -261,9 +261,11 @@ app.put('/meds/single/edit/:id', (request, response) => {
     var newMed = request.body;
 
     let now = moment().local().format();
-    let timeNextPill = moment(newMed.start_time).format()
+    let timeNextPill = moment(newMed.start_time).local().format()
     now = Date.parse(now)
     timeNextPill = Date.parse(timeNextPill);
+
+    console.log(timeNextPill < now);
 
     if (timeNextPill < now){
         timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').local().format();
@@ -271,7 +273,8 @@ app.put('/meds/single/edit/:id', (request, response) => {
     } else {
         console.log("no need to update time");
     }
-
+    //need to format timenextpill otherwise it cannot be entered into postgre
+    timeNextPill = moment(timeNextPill).local().format();
     let queryString = "UPDATE medication SET name=($1), dose=($2), dose_category=($3), time_interval=($4), start_time=($5) WHERE id = ($6)";
     let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, newMed.id];
 
@@ -305,7 +308,7 @@ app.post('/meds', (request, response) => {
     } else {
         console.log("no need to update time");
     }
-
+    timeNextPill = moment(timeNextPill).local().format();
     const queryString = 'INSERT INTO medication (name, dose, dose_category, time_interval, start_time, user_id) VALUES ($1, $2, $3, $4, $5, $6)';
     let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, userId];
     pool.query(queryString, values, (err, res) => {

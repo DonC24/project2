@@ -8,7 +8,7 @@ class Onemed extends React.Component {
     return (
         <div class="output card bg-light mb-3  border-dark mb-3 shadow-sm p-3 mb-5 bg-white rounded" style={{width: '30rem'}}>
             <div class="card-body">
-                {/*User Id: {this.props.medData.user_id}<br />*/}
+
                 <p class="card-text"><strong>Name:</strong> {this.props.medData.med_name}<br />
                 <strong>Dose:</strong> {this.props.medData.dose} {this.props.medData.dose_category}<br />
                 <strong>Next dose in:</strong> {this.props.medData.nextTime} ({this.props.timing})<br /></p>
