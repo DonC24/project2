@@ -175,7 +175,7 @@ app.get('/meds/single/delete/:id', (request, response) => {
                 //format start time to local time to display on user page
                 for( let i= 0; i< res.rows.length; i++) {
                     let dateTimeNext = res.rows[i].start_time;
-                    res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+                    res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a ZZ");
                 }
 
                 const data = {
@@ -232,7 +232,7 @@ app.get('/meds/single/edit/:id', (request, response) => {
                     //format start time to local time to display on user page
                     for( let i= 0; i< res.rows.length; i++) {
                         let dateTimeNext = res.rows[i].start_time;
-                        res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+                        res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a ZZ");
                     }
                     let anylogdata = true;
                     const data = {
