@@ -55,7 +55,9 @@ class Editmed extends React.Component {
                     Update the time that you will start taking your medication? <input class="form-control" type="datetime-local" name="start_time" required />
                 </div>
                     <p>--</p>
+                <div class="form-group">
                     <input class="btn btn-primary" type="submit" value="Submit Edits" />
+                </div>
 
             </form>
         </Layout>

@@ -6,12 +6,30 @@ class Register extends React.Component {
 
         return (
             <Layout>
-                <form method="POST" action="/users">
-                    <h1>Register for a new account!</h1>
-                    <p>Name: <input name="name" /></p>
-                    <p>Password: <input type="password" name="password" /></p>
-                    <input type="submit" value="submit" />
-                </form>
+                <div>
+                    <form method="POST" action="/users">
+                        <h1>Register for a new account!</h1>
+                        <div class="form-row align-items-center justify-content-center">
+                            <div class="col-2">
+                                <label>Name:</label>
+                            </div>
+                            <div class="col-2">
+                                <input class="form-control"  name="name" />
+                            </div>
+                        </div>
+                        <div class="form-row align-items-center justify-content-center">
+                            <div class="col-2">
+                                <label>Password:</label>
+                            </div>
+                            <div class="col-2">
+                                <input class="form-control" name="password" />
+                            </div>
+                        </div>
+                        <div class="form-row align-items-center justify-content-center">
+                                <input id="loginSubmit" type="submit" value="Submit" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
             </Layout>
         );
     }

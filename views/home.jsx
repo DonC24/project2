@@ -9,14 +9,30 @@ class Home extends React.Component {
                 <div id="logindiv">
                     <form method="POST" action="/users/logincheck">
                         <h2>Login to your account</h2>
-                        <table>
-                            <tr><td>Name:</td> <td><input name="name" /></td></tr>
-                            <tr><td>Password:</td> <td><input type="password" name="password" /></td></tr>
-                        </table>
-                        <input id="loginSubmit" type="submit" value="Submit" class="btn btn-primary" />
+                        <div class="form-row align-items-center justify-content-center">
+                            <div class="col-2">
+                                <label>Name:</label>
+                            </div>
+                            <div class="col-2">
+                                <input class="form-control"  name="name" />
+                            </div>
+                        </div>
+                        <div class="form-row align-items-center justify-content-center">
+                            <div class="col-2">
+                                <label>Password:</label>
+                            </div>
+                            <div class="col-2">
+                                <input class="form-control"  type="password" name="password" />
+                            </div>
+                        </div>
+                        <div class="form-row align-items-center justify-content-center">
+                            <input id="loginSubmit" type="submit" value="Submit" class="btn btn-primary" />
+                        </div>
                     </form>
                 </div>
-                <a href="/register"><button class="btn btn-outline-primary">Register for an account</button></a>
+                <div class="form-row align-items-center justify-content-center">
+                    <a href="/register"><button class="btn btn-outline-primary">Register for an account</button></a>
+                </div>
 
             </Layout>
         );
