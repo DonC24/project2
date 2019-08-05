@@ -296,23 +296,23 @@ app.post('/meds', (request, response) => {
     // console.log(typeof userId);
 
     //let now = moment().utcOffset(8).format();
-    let now = moment.utc().format();
+    let now = moment.utc().unix().format();
     console.log(now);
     //let timeNextPill = moment(newMed.start_time).utcOffset(8).format();
-    let timeNextPill = moment.utc(newMed.start_time).format();
+    let timeNextPill = moment.utc(newMed.start_time).unix().format();
     //need to use Date.parse before comparison otherwise date time cannot be compared
     now = Date.parse(now)
     timeNextPill = Date.parse(timeNextPill);
     console.log(timeNextPill < now);
     if (timeNextPill < now){
         //timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').utcOffset(8).format();
-        timeNextPill = moment.utc(timeNextPill).add(newMed.time_interval, 'h').format();
+        timeNextPill = moment.utc(timeNextPill).add(newMed.time_interval, 'h').unix().format();
         //console.log("timeNextPill " + timeNextPill);
     } else {
         console.log("no need to update time");
     }
     //timeNextPill = moment(timeNextPill).utcOffset(8).format();
-    timeNextPill = moment.utc(timeNextPill).format();
+    timeNextPill = moment.utc(timeNextPill).unix().format();
     const queryString = 'INSERT INTO medication (name, dose, dose_category, time_interval, start_time, user_id) VALUES ($1, $2, $3, $4, $5, $6)';
     let values = [newMed.name, newMed.dose, newMed.dose_category, newMed.time_interval, timeNextPill, userId];
     pool.query(queryString, values, (err, res) => {
