@@ -110,7 +110,7 @@ app.put('/meds/updates/:id', (request, response) => {
                 let med = res.rows;
                 console.log(med);
 
-                let now = moment();
+                let now = moment().local().format();
                 console.log("now: " + now);
 
                 //check if time now is after start time. if it is, add interval to previous start time
@@ -225,20 +225,25 @@ app.get('/meds/single/edit/:id', (request, response) => {
             if (err) {
                 console.log("query error", err.message);
             } else {
+                if(res.rows[0] === undefined){
+                    response.send("Please add medication before trying to use this function");
+                } else {
 
-                //format start time to local time to display on user page
-                for( let i= 0; i< res.rows.length; i++) {
-                    let dateTimeNext = res.rows[i].start_time;
-                    res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+                    //format start time to local time to display on user page
+                    for( let i= 0; i< res.rows.length; i++) {
+                        let dateTimeNext = res.rows[i].start_time;
+                        res.rows[i]['start_time'] = moment(dateTimeNext).format("dddd, DD MMM YYYY, h:mm a");
+                    }
+                    let anylogdata = true;
+                    const data = {
+                        med : res.rows[0],
+                        cookieLogin: cookieLogin,
+                        cookieUserId: cookieUserId,
+                        anylogdata : anylogdata
+                    };
+                    console.log(data);
+                    response.render('edit', data);
                 }
-
-                const data = {
-                    med : res.rows[0],
-                    cookieLogin: cookieLogin,
-                    cookieUserId: cookieUserId
-                };
-                console.log(data);
-                response.render('edit', data);
             }
         });
     } else {
@@ -255,7 +260,7 @@ app.put('/meds/single/edit/:id', (request, response) => {
     console.log(request.body);
     var newMed = request.body;
 
-    let now = moment();
+    let now = moment().local().format();
     let timeNextPill = moment(newMed.start_time).format()
     now = Date.parse(now)
     timeNextPill = Date.parse(timeNextPill);
@@ -287,9 +292,9 @@ app.post('/meds', (request, response) => {
     // console.log("user Id " + userId);
     // console.log(typeof userId);
 
-    let now = moment();
+    let now = moment().local().format();
     console.log(now);
-    let timeNextPill = moment(newMed.start_time).format()
+    let timeNextPill = moment(newMed.start_time).local().format()
     //need to use Date.parse before comparison otherwise date time cannot be compared
     now = Date.parse(now)
     timeNextPill = Date.parse(timeNextPill);
@@ -333,15 +338,22 @@ app.get('/meds/:id/log', (request, response) => {
                 console.log("query error", err.message);
 
             } else {
-                //console.log(res.rows);
+                if(res.rows[0] === undefined){
+                    response.send("Please add medication before trying to use this function");
+                } else {
+                    //console.log(res.rows);
 
-                console.log(res.rows);
-                const data = {
-                    logData : res.rows,
-                    cookieLogin: cookieLogin,
-                    cookieUserId: cookieUserId
+                    console.log(res.rows);
+                    let anylogdata =true;
+                    const data = {
+                        logData : res.rows,
+                        cookieLogin: cookieLogin,
+                        cookieUserId: cookieUserId,
+                        anylogdata : anylogdata
+                    }
+                    response.render('medlog', data);
                 }
-                response.render('medlog', data);
+
             }
         });
     } else {
@@ -356,9 +368,11 @@ app.get('/meds/new', (request, response) => {
     if (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]){
         let cookieLogin = (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]) ? true : false;
         let cookieUserId = request.cookies['User'];
+        let anylogdata = false;
         const data = {
             cookieLogin: cookieLogin,
-            cookieUserId: cookieUserId
+            cookieUserId: cookieUserId,
+            anylogdata: anylogdata
         }
         response.render('new', data);
     } else {
@@ -386,7 +400,7 @@ app.get('/meds/:id', (request, response) => {
             } else {
                 console.log(res.rows);
                 if(res.rows[0] === undefined){
-                    console.log(cookieUserId);
+                    console.log("user undefined: " + cookieUserId);
                     const queryString = "SELECT name FROM users WHERE id = $1";
                     const values = [parseInt(request.params.id)];
                     let anylogdata = false;
@@ -431,7 +445,7 @@ app.get('/meds/:id', (request, response) => {
                     let minMili = moment.duration(minDuration).asMilliseconds();
                     console.log("minMili " + minMili);
 
-                    let anylogdata =true
+                    let anylogdata = true;
                     //let nextPill = moment(res.rows[0].start_time).toNow();
                     //let currentTime = moment();
                     //console.log(nextPill);
@@ -441,6 +455,7 @@ app.get('/meds/:id', (request, response) => {
                     const data = {
                         medData : res.rows,
                         minTime : minMili,
+                        cookieUserId : cookieUserId,
                         cookieLogin: cookieLogin,
                         anylogdata : anylogdata
                     }
