@@ -95,10 +95,10 @@ app.engine('jsx', reactEngine);
 //PUT request from timeout/confirmation button
 app.put('/meds/updates/:id', (request, response) => {
     if (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]){
-        console.log(request.params);
-        console.log("inside put req for confirmation");
+        // console.log(request.params);
+        // console.log("inside put req for confirmation");
         var inputId = parseInt(request.params.id);
-        console.log(inputId);
+        // console.log(inputId);
 
         //get all medication from user ordered by start time
         let queryString = "SELECT * FROM medication WHERE user_id = ($1) ORDER BY start_time ASC";
@@ -108,10 +108,10 @@ app.put('/meds/updates/:id', (request, response) => {
                 console.log("query error", err.message);
             } else {
                 let med = res.rows;
-                console.log(med);
+                // console.log(med);
 
                 let now = moment().format();
-                console.log("now: " + now);
+                // console.log("now: " + now);
 
                 //check if time now is after start time. if it is, add interval to previous start time
                 for(let i = 0; i<med.length; i++){
@@ -121,7 +121,7 @@ app.put('/meds/updates/:id', (request, response) => {
                         console.log("do nothing");
                     }
                 }
-                console.log(med);
+                // console.log(med);
 
                 //update start time in medication list to new start time.
                 for(let j = 0;  j < med.length; j++){
@@ -196,12 +196,12 @@ app.get('/meds/single/delete/:id', (request, response) => {
 });
 
 app.delete('/meds/single/:id', (request, response) => {
-    console.log("inside app delete");
+    // console.log("inside app delete");
     var newMed = request.body;
     var inputId = parseInt(request.params.id);
     let queryString = "DELETE FROM medication WHERE id = ($1)";
     var idVal = [inputId];
-    console.log(idVal);
+    // console.log(idVal);
     pool.query(queryString, idVal, (err, res) => {
         if (err) {
             console.log("query error", err.message);
@@ -241,7 +241,7 @@ app.get('/meds/single/edit/:id', (request, response) => {
                         cookieUserId: cookieUserId,
                         anylogdata : anylogdata
                     };
-                    console.log(data);
+                    // console.log(data);
                     response.render('edit', data);
                 }
             }
@@ -257,7 +257,7 @@ app.get('/meds/single/edit/:id', (request, response) => {
 app.put('/meds/single/edit/:id', (request, response) => {
     console.log("inside single edit put");
     var inputId = parseInt(request.params.id);
-    console.log(request.body);
+    // console.log(request.body);
     var newMed = request.body;
 
     let now = moment().format();
@@ -265,7 +265,7 @@ app.put('/meds/single/edit/:id', (request, response) => {
     now = Date.parse(now)
     timeNextPill = Date.parse(timeNextPill);
 
-    console.log(timeNextPill < now);
+    // console.log(timeNextPill < now);
 
     if (timeNextPill < now){
         timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').format();
@@ -296,13 +296,13 @@ app.post('/meds', (request, response) => {
     // console.log(typeof userId);
 
     let now = moment().format();
-    console.log(now);
+    // console.log(now);
 
     let timeNextPill = moment(newMed.start_time).format();
     //need to use Date.parse before comparison otherwise date time cannot be compared
     now = Date.parse(now)
     timeNextPill = Date.parse(timeNextPill);
-    console.log(timeNextPill < now);
+    // console.log(timeNextPill < now);
     if (timeNextPill < now){
 
         timeNextPill = moment(timeNextPill).add(newMed.time_interval, 'h').format();
@@ -318,7 +318,7 @@ app.post('/meds', (request, response) => {
         if (err) {
             console.log("query error", err.message);
         } else {
-            console.log(res);
+            // console.log(res);
 
             //response.send("New medication has been created!");
             response.redirect(`/meds/${userId}`);
@@ -333,7 +333,7 @@ app.get('/meds/:id/log', (request, response) => {
         let cookieLogin = (sha256("you are in" + request.cookies["User"] + SALT) === request.cookies["loggedin"]) ? true : false;
         let cookieUserId = request.cookies['User'];
 
-        console.log(response.body);
+        // console.log(response.body);
 
         const queryString = "SELECT medication.id AS med_id,medication.name, medication.user_id, confirmation.id, confirmation.medication_id, confirmation.time_taken FROM medication INNER JOIN confirmation ON (medication.id = confirmation.medication_id) WHERE medication.user_id = $1 ORDER BY confirmation.time_taken DESC";
 
@@ -349,7 +349,6 @@ app.get('/meds/:id/log', (request, response) => {
                 } else {
                     //console.log(res.rows);
 
-                    console.log(res.rows);
                     let anylogdata =true;
                     const data = {
                         logData : res.rows,
@@ -404,7 +403,7 @@ app.get('/meds/:id', (request, response) => {
             if (err) {
                 console.log("query error", err.message);
             } else {
-                console.log(res.rows);
+                // console.log(res.rows);
                 if(res.rows[0] === undefined){
                     console.log("user undefined: " + cookieUserId);
                     const queryString = "SELECT name FROM users WHERE id = $1";
@@ -414,7 +413,7 @@ app.get('/meds/:id', (request, response) => {
                         if (err) {
                             console.log("query error", err.message);
                         } else {
-                            console.log(res.rows);
+                            // console.log(res.rows);
                                 const data = {
                                     medData : res.rows,
                                     cookieLogin: cookieLogin,
@@ -457,7 +456,7 @@ app.get('/meds/:id', (request, response) => {
                     //console.log(nextPill);
                     //console.log(currentTime);
                     // console.log("next time " + res.rows[0].nextTime);
-                    console.log(res.rows);
+                    // console.log(res.rows);
                     const data = {
                         medData : res.rows,
                         minTime : minMili,
@@ -491,7 +490,7 @@ app.post('/users', (request, response) => {
             console.log("query error", err.message);
         } else {
             console.log("YAY");
-            console.log(res.rows[0] );
+            // console.log(res.rows[0] );
 
             let hashedLogin = sha256("you are in" + res.rows[0].id + SALT);
 
@@ -517,7 +516,7 @@ app.get('/logout', (request, response) => {
 app.post('/users/logincheck', (request, response) => {
     // hash the password
     let hashedPassword = sha256( request.body.password + SALT );
-    console.log(request.body);
+    // console.log(request.body);
 
     const queryString = "SELECT * FROM users WHERE name=$1 AND password=$2";
 
@@ -532,7 +531,7 @@ app.post('/users/logincheck', (request, response) => {
                 response.send("Sorry, the user name/password was incorrect.");
             } else {
                 console.log("YAY");
-                console.log(res.rows);
+                // console.log(res.rows);
 
                 let hashedLogin = sha256("you are in" + res.rows[0].id + SALT);
                 // check to see if err is null
