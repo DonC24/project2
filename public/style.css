@@ -6,13 +6,6 @@ body{
 	align-items: center;
 }
 
-body .output{
-	border: solid 1px black;
-	border-radius: 10px;
-	padding: 20px;
-	margin: 20px;
-}
-
 body #logindiv{
 	margin:20px;
 }
@@ -29,4 +22,10 @@ body #loginSubmit{
 footer{
 	text-align: left;
 	color: grey;
+}
+
+.item-container{
+	width: 500px;
+	justify-content: center;
+	margin: 0 auto;
 }

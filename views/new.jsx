@@ -48,7 +48,7 @@ class New extends React.Component {
                             </div>
                                 <p>--</p>
                             <div class="form-group">
-                                <input class="btn btn-primary" type="submit" value="Submit Edits" />
+                                <input class="btn btn-primary" type="submit" value="submit" />
                             </div>
                         </form>
                     </div>
