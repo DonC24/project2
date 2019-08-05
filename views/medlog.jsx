@@ -6,10 +6,12 @@ class Onelog extends React.Component {
     console.log('creating a log?');
 
     return (
-        <div class="output">
-            {/*User Id: {this.props.medData.user_id}<br />*/}
-            <p><strong>Medication name:</strong> {this.props.logData.name}<br />
-            <strong>Time taken:</strong> {this.props.logData.time_taken.toString()}</p>
+        <div class="output card bg-light mb-3  border-dark mb-3 shadow-sm p-3 mb-5 bg-white rounded" style={{width: '30rem'}}>
+            <div class="card-body">
+                {/*User Id: {this.props.medData.user_id}<br />*/}
+                <p class="card-text"><strong>Medication name:</strong> {this.props.logData.name}<br />
+                <strong>Time taken:</strong> {this.props.logData.time_taken.toString()}</p>
+            </div>
         </div>
     );
   }
@@ -30,7 +32,7 @@ class Medlog extends React.Component {
             <Layout cookieLogin={this.props.cookieLogin} cookieUserId={this.props.cookieUserId} anylogdata={this.props.anylogdata}>
                 <h1>Medication Log</h1>
 
-                <div>
+                <div class="item-container">
                     {itemElements}
                 </div>
                 <a href={url}>Go back</a>
