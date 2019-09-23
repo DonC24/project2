@@ -142,6 +142,7 @@ app.put('/meds/updates/:id', (request, response) => {
                                     console.log("query error", err.message);
                                 } else {
                                     console.log("confirmation inserted");
+                                    //if statement if j = (med.length -1) then response.redirect - delete settimeout redirect because it is no longer required. So this way you know that the insertion has been completed when redirect happens.
                                 }
                             })
                         }

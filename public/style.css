@@ -1,13 +1,12 @@
 body{
-	/*width: 50%;*/
-	margin: 0 auto;
+	/*margin: 0 auto;*/
 	background-color: #B7D6EC;
 	text-align: center;
-	align-items: center;
+	/*align-items: center;*/
 }
 
 body #logindiv{
-	margin:20px;
+	margin: 20px;
 }
 
 body table{
@@ -24,8 +23,8 @@ footer{
 	color: grey;
 }
 
-.item-container{
-	width: 500px;
-	justify-content: center;
-	margin: 0 auto;
+.cards{
+	display: inline-flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
 }

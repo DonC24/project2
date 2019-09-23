@@ -6,11 +6,13 @@ class Onelog extends React.Component {
     console.log('creating a log?');
 
     return (
-        <div class="output card bg-light mb-3  border-dark mb-3 shadow-sm p-3 mb-5 bg-white rounded" style={{width: '30rem'}}>
-            <div class="card-body">
-                {/*User Id: {this.props.medData.user_id}<br />*/}
-                <p class="card-text"><strong>Medication name:</strong> {this.props.logData.name}<br />
-                <strong>Time taken:</strong> {this.props.logData.time_taken.toString()}</p>
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 cards">
+            <div class="output card bg-light mb-3  border-dark mb-3 shadow-sm p-3 mb-5 bg-white rounded" style={{width: '20rem'}}>
+                <div class="card-body">
+                    {/*User Id: {this.props.medData.user_id}<br />*/}
+                    <p class="card-text"><strong>Medication name:</strong> {this.props.logData.name}<br />
+                    <strong>Time taken:</strong> {this.props.logData.time_taken.toString()}</p>
+                </div>
             </div>
         </div>
     );
