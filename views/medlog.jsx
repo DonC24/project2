@@ -7,7 +7,7 @@ class Onelog extends React.Component {
 
     return (
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 cards">
-            <div class="output card bg-light mb-3  border-dark mb-3 shadow-sm p-3 mb-5 bg-white rounded" style={{width: '20rem'}}>
+            <div class="output card bg-light mb-3  border-dark mb-3 shadow-sm p-3 mb-5 bg-white rounded" style={{width: '18rem'}}>
                 <div class="card-body">
                     {/*User Id: {this.props.medData.user_id}<br />*/}
                     <p class="card-text"><strong>Medication name:</strong> {this.props.logData.name}<br />

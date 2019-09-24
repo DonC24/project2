@@ -14,7 +14,7 @@ class Deletemed extends React.Component {
     return (
 
         <Layout cookieLogin={this.props.cookieLogin} cookieUserId={this.props.cookieUserId} anylogdata={this.props.anylogdata}>
-            <h1>Confirm deletion of this medication!</h1>
+            <h1>Confirm deletion of this medication and its logs!</h1>
             <form method="POST" action={url}>
                 <input type="hidden" name="id" value={this.props.med.id} />
                 <input type="hidden" name="user_id" value={this.props.med.user_id} />

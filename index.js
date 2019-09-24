@@ -200,15 +200,23 @@ app.delete('/meds/single/:id', (request, response) => {
     // console.log("inside app delete");
     var newMed = request.body;
     var inputId = parseInt(request.params.id);
-    let queryString = "DELETE FROM medication WHERE id = ($1)";
+    let queryString1 = "DELETE FROM confirmation WHERE medication_id = ($1)";
+
     var idVal = [inputId];
     // console.log(idVal);
-    pool.query(queryString, idVal, (err, res) => {
+    pool.query(queryString1, idVal, (err, res) => {
         if (err) {
             console.log("query error", err.message);
         } else {
-            //response.send('Yay! deleted!');
-            response.redirect(`/meds/${newMed.user_id}`);
+            let queryString2 = "DELETE FROM medication WHERE id = ($1)";
+            pool.query(queryString2, idVal, (err, res) => {
+                if (err) {
+                    console.log("query error", err.message);
+                } else {
+                    //response.send('Yay! deleted!');
+                    response.redirect(`/meds/${newMed.user_id}`);
+                }
+            });
         }
     });
 });
