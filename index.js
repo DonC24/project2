@@ -143,13 +143,16 @@ app.put('/meds/updates/:id', (request, response) => {
                                 } else {
                                     console.log("confirmation inserted");
                                     //if statement if j = (med.length -1) then response.redirect - delete settimeout redirect because it is no longer required. So this way you know that the insertion has been completed when redirect happens.
+                                    if (j = (med.length - 1)){
+                                        response.redirect(`/meds/${med[0].user_id}`)
+                                    }
                                 }
                             })
                         }
                     })
                 }
 
-                setTimeout(function(){response.redirect(`/meds/${med[0].user_id}`)}, 2000);
+                //setTimeout(function(){response.redirect(`/meds/${med[0].user_id}`)}, 2000);
             }
         });
     } else {
@@ -200,6 +203,7 @@ app.delete('/meds/single/:id', (request, response) => {
     // console.log("inside app delete");
     var newMed = request.body;
     var inputId = parseInt(request.params.id);
+    //delete logs of medication
     let queryString1 = "DELETE FROM confirmation WHERE medication_id = ($1)";
 
     var idVal = [inputId];
@@ -208,6 +212,7 @@ app.delete('/meds/single/:id', (request, response) => {
         if (err) {
             console.log("query error", err.message);
         } else {
+            //delete medication
             let queryString2 = "DELETE FROM medication WHERE id = ($1)";
             pool.query(queryString2, idVal, (err, res) => {
                 if (err) {

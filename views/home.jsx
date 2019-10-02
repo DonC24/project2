@@ -32,39 +32,41 @@ class Home extends React.Component {
                 </ul>
               </div>
             </nav>
+                <div id="homewrap">
+                    <div className="home-left">
+                        <h1>MedTracker</h1>
+                        <h2>A medication tracker so that you are reminded to take your medication on time</h2>
+                    </div>
+                    <div id="logindiv" class="col-4">
+                        <form class="loginform col-12" method="POST" action="/users/logincheck">
+                            <h2>Login to your account</h2>
+                            <div class="form-group row col-10">
+                                <label for="username" class="col-sm-2 col-form-label">Name: </label>
+                                <div class="col-sm-10">
+                                    <input id="username" class="form-control"  name="name" />
+                                </div>
+                            </div>
+                            <div class="form-group row col-10">
+                                <label for="inputPassword" class="col-sm-2 col-form-label">Password: </label>
+                                <div class="col-sm-10">
+                                    <input id="inputPassword" class="form-control"  type="password" name="password" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <input id="loginSubmit" type="submit" value="Submit" class="btn btn-primary" />
+                            </div>
+                            <div class="row">
+                        <a href="/register" id="regbtn"><button  class="btn btn-outline-primary">Register for an account</button></a>
+                        </div>
+                        </form>
 
-                <h1>MedTracker</h1>
-                <div id="logindiv">
-                    <form method="POST" action="/users/logincheck">
-                        <h2>Login to your account</h2>
-                        <div class="form-row align-items-center justify-content-center">
-                            <div class="col-2">
-                                <label>Name:</label>
-                            </div>
-                            <div class="col-2">
-                                <input class="form-control"  name="name" />
-                            </div>
-                        </div>
-                        <div class="form-row align-items-center justify-content-center">
-                            <div class="col-2">
-                                <label>Password:</label>
-                            </div>
-                            <div class="col-2">
-                                <input class="form-control"  type="password" name="password" />
-                            </div>
-                        </div>
-                        <div class="form-row align-items-center justify-content-center">
-                            <input id="loginSubmit" type="submit" value="Submit" class="btn btn-primary" />
-                        </div>
-                    </form>
-                </div>
-                <div class="form-row align-items-center justify-content-center">
-                    <a href="/register"><button class="btn btn-outline-primary">Register for an account</button></a>
-                </div>
+                    </div>
 
-            <footer>
-                <p>MedTracker 2019</p>
-            </footer>
+
+                <footer>
+                    <p>MedTracker 2019</p>
+                </footer>
+            </div>
         </body>
       </html>
         );
