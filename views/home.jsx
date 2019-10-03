@@ -38,28 +38,33 @@ class Home extends React.Component {
                         <h2>A medication tracker so that you are reminded to take your medication on time</h2>
                     </div>
                     <div id="logindiv" class="col-4">
-                        <form class="loginform col-12" method="POST" action="/users/logincheck">
-                            <h2>Login to your account</h2>
-                            <div class="form-group row col-10">
-                                <label for="username" class="col-sm-2 col-form-label">Name: </label>
-                                <div class="col-sm-10">
-                                    <input id="username" class="form-control"  name="name" />
-                                </div>
-                            </div>
-                            <div class="form-group row col-10">
-                                <label for="inputPassword" class="col-sm-2 col-form-label">Password: </label>
-                                <div class="col-sm-10">
-                                    <input id="inputPassword" class="form-control"  type="password" name="password" />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <input id="loginSubmit" type="submit" value="Submit" class="btn btn-primary" />
+                        <div class="container">
+                            <div class="row">
+                                <form class="loginform col-12" method="POST" action="/users/logincheck">
+                                    <h2>Login to your account</h2>
+                                    <div class="form-group row col-10">
+                                        <label for="username" class="col-sm-2 col-form-label">Name: </label>
+                                        <div class="col-sm-10">
+                                            <input id="username" class="form-control"  name="name" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group row col-10">
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">Password: </label>
+                                        <div class="col-sm-10">
+                                            <input id="inputPassword" class="form-control"  type="password" name="password" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <input id="loginSubmit" type="submit" value="Submit" class="btn btn-primary" />
+                                    </div>
+                                </form>
                             </div>
                             <div class="row">
-                        <a href="/register" id="regbtn"><button  class="btn btn-outline-primary">Register for an account</button></a>
+                                <div class="col">
+                                <a href="/register" id="regbtn"><button  class="btn btn-outline-primary">Register for an account</button></a>
+                                </div>
+                            </div>
                         </div>
-                        </form>
-
                     </div>
 
 

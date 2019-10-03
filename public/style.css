@@ -36,7 +36,7 @@ body table{
 	text-align: left;
 }
 
-body #loginSubmit, #regbtn{
+body #loginSubmit{
 	margin: 0 auto;
 }
 

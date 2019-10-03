@@ -143,16 +143,16 @@ app.put('/meds/updates/:id', (request, response) => {
                                 } else {
                                     console.log("confirmation inserted");
                                     //if statement if j = (med.length -1) then response.redirect - delete settimeout redirect because it is no longer required. So this way you know that the insertion has been completed when redirect happens.
-                                    if (j = (med.length - 1)){
+                                    /*if (j = (med.length - 1)){
                                         response.redirect(`/meds/${med[0].user_id}`)
-                                    }
+                                    }*/
                                 }
                             })
                         }
                     })
                 }
 
-                //setTimeout(function(){response.redirect(`/meds/${med[0].user_id}`)}, 2000);
+                setTimeout(function(){response.redirect(`/meds/${med[0].user_id}`)}, 2000);
             }
         });
     } else {
@@ -567,7 +567,7 @@ app.post('/users/logincheck', (request, response) => {
 });
 
 app.get('/register', (request, response) => {
-    response.render('register');
+    response.render('/register');
 });
 
 app.get('/', (request, response) => {
