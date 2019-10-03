@@ -567,7 +567,7 @@ app.post('/users/logincheck', (request, response) => {
 });
 
 app.get('/register', (request, response) => {
-    response.render('/register');
+    response.render('register');
 });
 
 app.get('/', (request, response) => {
